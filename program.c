@@ -32,92 +32,96 @@ int main (void) {
 	fscanf(matrizB," %d", &mB.linha);
 	fscanf(matrizB," %d", &mB.coluna);
 
-	if(mA.coluna == mB.linha && mA.coluna != 0) {
-		//Criar Matrizes Dinamicas
-		mA.matriz = malloc(sizeof(int*) * mA.linha);
-		for(i = 0; i < mA.linha; i++) {
-			mA.matriz[i] = malloc(sizeof(int) * mA.coluna);
-		}
-
-		mB.matriz = malloc(sizeof(int*) * mB.linha);
-		for(i = 0; i < mB.linha; i++) {
-			mB.matriz[i] = malloc(sizeof(int) * mB.coluna);
-		}
-
-		//Ler valores das matrizes
-		//Matriz A
-		for(i = 0; i < mA.linha; i++) {
-			for(j = 0; j < mA.coluna; j++) {
-				fscanf(matrizA," %d", &elemento);
-				mA.matriz[i][j] = elemento;
-			}
-		}
-		//Matriz B
-		for(i = 0; i < mB.linha; i++) {
-			for(j = 0; j < mB.coluna; j++) {
-				fscanf(matrizB," %d", &elemento);
-				mB.matriz[i][j] = elemento;
-			}
-		}
-		elemento = 0;
-
-		//Verificar se uma das matriz é matriz identidade
-		if(identidade(mA) == 0) {
-			mR = mB;
-		} else if(identidade(mB) == 0) {
-			mR = mA;
-		} else {
-			//Preparar Matriz Resultado
-			mR.linha = mA.linha;
-			mR.coluna = mB.coluna;
-
-			
-			mR.matriz = malloc(mR.linha * sizeof(int*));
-			for(i = 0; i < mR.linha; i++) {
-				mR.matriz[i] = malloc(mR.coluna * sizeof(int));
+	if(mA.linha == 0 || mA.coluna == 0 || mB.linha == 0 || mB.coluna == 0) {
+		printf("As matrizes nao seguem as propriedades necessarias para realizar a multiplicacao.\n");
+	} else {
+		if(mA.coluna == mB.linha) {
+			//Criar Matrizes Dinamicas
+			mA.matriz = malloc(sizeof(int*) * mA.linha);
+			for(i = 0; i < mA.linha; i++) {
+				mA.matriz[i] = malloc(sizeof(int) * mA.coluna);
 			}
 
-			//Multiplicar MatrizA e B
-			for(i = 0; i < mR.linha; i++) {
-				for(j = 0; j < mR.coluna; j++) {
-					for(k = 0; k < mA.coluna; k++) {
-						elemento = elemento + mA.matriz[i][k]*mB.matriz[k][j];
-					}
-					mR.matriz[i][j] = elemento;
-					elemento = 0;
+			mB.matriz = malloc(sizeof(int*) * mB.linha);
+			for(i = 0; i < mB.linha; i++) {
+				mB.matriz[i] = malloc(sizeof(int) * mB.coluna);
+			}
+
+			//Ler valores das matrizes
+			//Matriz A
+			for(i = 0; i < mA.linha; i++) {
+				for(j = 0; j < mA.coluna; j++) {
+					fscanf(matrizA," %d", &elemento);
+					mA.matriz[i][j] = elemento;
 				}
 			}
-		}
-
-		//Imprimindo Matriz Resultante
-		printf("%d %d\n", mR.linha, mR.coluna);
-		for(i = 0; i < mR.linha; i++) {
-			for(j = 0; j < mR.coluna; j++) {
-				printf("%d ", mR.matriz[i][j]);
+			//Matriz B
+			for(i = 0; i < mB.linha; i++) {
+				for(j = 0; j < mB.coluna; j++) {
+					fscanf(matrizB," %d", &elemento);
+					mB.matriz[i][j] = elemento;
+				}
 			}
-			printf("\n");
-		}
+			elemento = 0;
 
-		//Liberar memória alocada dinâmicamente
-		//Precisa verificar se umas das matrizes foi identidade para evitar um double free
-		if(identidade(mA) != 0 && identidade(mB) !=0) {
+			//Verificar se uma das matriz é matriz identidade
+			if(identidade(mA) == 0) {
+				mR = mB;
+			} else if(identidade(mB) == 0) {
+				mR = mA;
+			} else {
+				//Preparar Matriz Resultado
+				mR.linha = mA.linha;
+				mR.coluna = mB.coluna;
+
+				
+				mR.matriz = malloc(mR.linha * sizeof(int*));
+				for(i = 0; i < mR.linha; i++) {
+					mR.matriz[i] = malloc(mR.coluna * sizeof(int));
+				}
+
+				//Multiplicar MatrizA e B
+				for(i = 0; i < mR.linha; i++) {
+					for(j = 0; j < mR.coluna; j++) {
+						for(k = 0; k < mA.coluna; k++) {
+							elemento = elemento + mA.matriz[i][k]*mB.matriz[k][j];
+						}
+						mR.matriz[i][j] = elemento;
+						elemento = 0;
+					}
+				}
+			}
+
+			//Imprimindo Matriz Resultante
+			printf("%d %d\n", mR.linha, mR.coluna);
 			for(i = 0; i < mR.linha; i++) {
-				free(mR.matriz[i]);
+				for(j = 0; j < mR.coluna; j++) {
+					printf("%d ", mR.matriz[i][j]);
+				}
+				printf("\n");
 			}
-			free(mR.matriz);
-		}
 
-		for(i = 0; i < mA.linha; i++) {
-			free(mA.matriz[i]);
-		}
-		free(mA.matriz);
-		for(i = 0; i < mB.linha; i++) {
-			free(mB.matriz[i]);
-		}
-		free(mB.matriz);
+			//Liberar memória alocada dinâmicamente
+			//Precisa verificar se umas das matrizes foi identidade para evitar um double free
+			if(identidade(mA) != 0 && identidade(mB) !=0) {
+				for(i = 0; i < mR.linha; i++) {
+					free(mR.matriz[i]);
+				}
+				free(mR.matriz);
+			}
 
-	} else {
-		printf("As matrizes nao seguem as propriedades necessarias para realizar a multiplicacao.\n");
+			for(i = 0; i < mA.linha; i++) {
+				free(mA.matriz[i]);
+			}
+			free(mA.matriz);
+			for(i = 0; i < mB.linha; i++) {
+				free(mB.matriz[i]);
+			}
+			free(mB.matriz);
+
+		} else {
+			printf("As matrizes nao seguem as propriedades necessarias para realizar a multiplicacao.\n");
+		}
 	}
 
 	//Fechar arquivos
