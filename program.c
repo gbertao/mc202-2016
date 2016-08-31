@@ -2,7 +2,7 @@
  Programa
  Funcionamento: O programa irá receber a entrada de 2 arquivos;
 				Um teste para checar se as matrizes são multiplicaveisserá realizado;
-				Se mutiplicaveis ele as multiplicará e imprimira a matriz resultante na tela;
+				Se mutiplicaveis ele as multiplicará e imprimirá a matriz resultante na tela;
 				Caso não seja possivel realiar a multiplicação uma mensagem será obtida na saída.
 */				 
 #include<stdio.h>
@@ -14,6 +14,9 @@ struct matriz {
 	int coluna;
 	int **matriz;
 }mA, mB, mR;
+
+//Assinatura de funções
+int identidade(struct matriz m);
 
 int main (void) {
 	//Declaração de variaveis
@@ -41,7 +44,6 @@ int main (void) {
 			mB.matriz[i] = malloc(sizeof(int) * mB.coluna);
 		}
 
-
 		//Ler valores das matrizes
 		//Matriz A
 		for(i = 0; i < mA.linha; i++) {
@@ -59,27 +61,34 @@ int main (void) {
 		}
 		elemento = 0;
 
-		//Preparar Matriz Resultado
-		mR.linha = mA.linha;
-		mR.coluna = mB.coluna;
+		//Verificar se uma das matriz é matriz identidade
+		if(identidade(mA) == 0) {
+			mR = mB;
+		} else if(identidade(mB) == 0) {
+			mR = mA;
+		} else {
+			//Preparar Matriz Resultado
+			mR.linha = mA.linha;
+			mR.coluna = mB.coluna;
 
-		
-		mR.matriz = malloc(mR.linha * sizeof(int*));
-		for(i = 0; i < mR.linha; i++) {
-			mR.matriz[i] = malloc(mR.coluna * sizeof(int));
-		}
+			
+			mR.matriz = malloc(mR.linha * sizeof(int*));
+			for(i = 0; i < mR.linha; i++) {
+				mR.matriz[i] = malloc(mR.coluna * sizeof(int));
+			}
 
-		//Multiplicar MatrizA e B
-		for(i = 0; i < mR.linha; i++) {
-			for(j = 0; j < mR.coluna; j++) {
-				for(k = 0; k < mA.coluna; k++) {
-					elemento = elemento + mA.matriz[i][k]*mB.matriz[k][j];
+			//Multiplicar MatrizA e B
+			for(i = 0; i < mR.linha; i++) {
+				for(j = 0; j < mR.coluna; j++) {
+					for(k = 0; k < mA.coluna; k++) {
+						elemento = elemento + mA.matriz[i][k]*mB.matriz[k][j];
+					}
+					mR.matriz[i][j] = elemento;
+					elemento = 0;
 				}
-				mR.matriz[i][j] = elemento;
-				elemento = 0;
 			}
 		}
-		
+
 		//Imprimindo Matriz Resultante
 		printf("%d %d\n", mR.linha, mR.coluna);
 		for(i = 0; i < mR.linha; i++) {
@@ -90,11 +99,13 @@ int main (void) {
 		}
 
 		//Liberar memória alocada dinâmicamente
-		for(i = 0; i < mR.linha; i++) {
-			free(mR.matriz[i]);
+		//Precisa verificar se umas das matrizes foi identidade para evitar um double free
+		if(identidade(mA) != 0 && identidade(mB) !=0) {
+			for(i = 0; i < mR.linha; i++) {
+				free(mR.matriz[i]);
+			}
+			free(mR.matriz);
 		}
-		free(mR.matriz);
-
 
 		for(i = 0; i < mA.linha; i++) {
 			free(mA.matriz[i]);
@@ -104,6 +115,7 @@ int main (void) {
 			free(mB.matriz[i]);
 		}
 		free(mB.matriz);
+
 	} else {
 		printf("As matrizes nao seguem as propriedades necessarias para realizar a multiplicacao.\n");
 	}
@@ -113,4 +125,27 @@ int main (void) {
 	fclose(matrizB);
 
 	return 0;
+}
+
+//Função: recebe uma matriz, verifica se ela é uma matriz identidade e retorna 0 se verdadeiro ou !0 se falso
+int identidade(struct matriz m) {
+	int i, j, r = 0;
+	if(m.linha == m.coluna) {
+		for(i = 0; i < m.linha; i++) {
+			for(j =0; j < m.coluna; j++) {
+				if(i == j) {
+					if(m.matriz[i][j] != 1) {
+						r++;
+					}
+				} else {
+					if(m.matriz[i][j] != 0) {
+						r++;
+					}
+				}
+			}
+		}
+	} else {
+		r++;
+	}
+	return r;
 }
