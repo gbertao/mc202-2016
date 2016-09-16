@@ -13,7 +13,7 @@ int aMTF(LISTA * lista, int chave);
 int iMTF(LISTA * lista, int chave);
 int aTR(LISTA * lista, int chave);
 int iTR(LISTA *lista, int chave);
-void transpose(LISTA * inicio, LISTA * p);
+void transpose(LISTA * inicio, LISTA ** p);
 int remover(LISTA * lista, int chave);
 void liberar_lista(LISTA * lista);
 void imprimir_lista(LISTA * lista);
@@ -117,7 +117,7 @@ void liberar_lista(LISTA * lista) {
 //Funções MTR
 int aMTF(LISTA * lista, int chave) {
 	LISTA * p, *anterior;
-	int custo = 0;
+	int custo = 1;
 	
 	p = lista->prox;
 	anterior = lista->prox;
@@ -128,32 +128,38 @@ int aMTF(LISTA * lista, int chave) {
 	}
 
 	//Deslocar
-	while(anterior->prox != p) {
-		anterior = anterior->prox;
+	if(lista->prox != p) {
+		while(anterior->prox != p) {
+			anterior = anterior->prox;
+		}
+		anterior->prox = p->prox;
+		p->prox = lista->prox;
+		lista->prox = p;
 	}
-	anterior->prox = p->prox;
-	p->prox = lista->prox;
-	lista->prox = p;
-
 	return custo;
 }
 
 int iMTF(LISTA * lista, int chave) {
 	LISTA * final, * novo;
-	int custo = 0;
+	int custo = 1;
 
 	novo = malloc(sizeof(LISTA));
 	novo->valor = chave;
 
 	final = lista->prox;
 
-	while(final->prox != NULL) {
+	if(final == NULL) {
+		lista->prox = novo;
+		novo->prox = NULL;
+	} else {
+		while(final->prox != NULL) {
+			custo++;
+			final = final->prox;
+		}
 		custo++;
-		final = final->prox;
+		novo->prox = final->prox;
+		final->prox = novo;
 	}
-
-	novo->prox = final->prox;
-	final->prox = novo;
 
 	return custo;
 }
@@ -161,7 +167,7 @@ int iMTF(LISTA * lista, int chave) {
 //Funcoes TR
 int aTR(LISTA * lista, int chave) {
 	LISTA * p;
-	int custo = 0;
+	int custo = 1;
 
 	p  = lista->prox;
 
@@ -171,7 +177,7 @@ int aTR(LISTA * lista, int chave) {
 	}
 
 	if(lista->prox != p) {
-		transpose(lista, p);
+		transpose(lista, &p);
 	}
 
 	return custo;
@@ -179,7 +185,7 @@ int aTR(LISTA * lista, int chave) {
 
 int iTR(LISTA *lista, int chave) {
 	LISTA *final, *novo;
-	int custo = 0;
+	int custo = 1;
 
 	novo = malloc(sizeof(LISTA));
 	novo->valor = chave;
@@ -191,35 +197,41 @@ int iTR(LISTA *lista, int chave) {
 		final = final->prox;
 	}
 
+	custo++;
 	novo->prox = final->prox;
 	final->prox = novo;
 
-	transpose(lista, novo);
+	transpose(lista, &novo);
 	
 
 	return custo;
 }
 
-void transpose(LISTA * inicio, LISTA * p) {
+void transpose(LISTA * inicio, LISTA ** p) {
 	LISTA *anterior, *aux;
 
 	anterior = inicio->prox;
 
-	while(anterior->prox != p) {
+	while(anterior->prox != *p) {
 		aux = anterior;
 		anterior = anterior->prox;
 	}
 	
-	aux->prox = p;
-	anterior->prox = p->prox;
-	p->prox = anterior;
+	if(inicio->prox->prox != *p) {
+		aux->prox = (*p);
+	} else {
+		inicio->prox = *p;
+	}
+
+	anterior->prox = (*p)->prox;
+	(*p)->prox = anterior;
 
 	return;
 }
 
 int remover(LISTA * lista, int chave) {
 	LISTA * p, *anterior;
-	int custo = 0;
+	int custo = 1;
 
 	p = lista->prox;
 
@@ -228,8 +240,12 @@ int remover(LISTA * lista, int chave) {
 		p = p->prox;
 		custo++;
 	}
-	
-	anterior->prox = p->prox;
+	if(lista->prox != p) {
+		anterior->prox = p->prox;
+	} else {
+		lista->prox = p->prox;
+	}
+
 	free(p);
 
 	return custo;
@@ -241,6 +257,7 @@ void imprimir_lista(LISTA * lista) {
 
 	while(printer != NULL) {
 		printf("%d ", printer->valor);
+		printer = printer->prox;
 	}
 
 	return;
