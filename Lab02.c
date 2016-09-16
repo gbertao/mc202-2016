@@ -119,21 +119,27 @@ int aMTF(LISTA * lista, int chave) {
 	p = lista->prox;
 	anterior = lista->prox;
 
-	while(p->valor != chave) {
-		custo++;
-		p = p->prox;
-	}
-
-	//Deslocar
-	if(lista->prox != p) {
-		while(anterior->prox != p) {
-			anterior = anterior->prox;
+	if(p != NULL) {//Caso Lista vazia
+		while(p->valor != chave) {
+			custo++;
+			p = p->prox;
+			if(p == NULL) {//Caso arquivo não encontrado
+				return custo;
+			}
 		}
-		anterior->prox = p->prox;
-		p->prox = lista->prox;
-		lista->prox = p;
+
+		//Deslocar
+		if(lista->prox != p) {
+			while(anterior->prox != p) {
+				anterior = anterior->prox;
+			}
+			anterior->prox = p->prox;
+			p->prox = lista->prox;
+			lista->prox = p;
+		}
+		return custo;
 	}
-	return custo;
+	return 0;
 }
 
 //Função: Inserir novo elemento
@@ -170,16 +176,22 @@ int aTR(LISTA * lista, int chave) {
 
 	p  = lista->prox;
 
-	while(p->valor != chave) {
-		custo++;
-		p = p->prox;
-	}
+	if(p != NULL) {//Lista não vazia
+		while(p->valor != chave) {
+			custo++;
+			p = p->prox;
+			if(p == NULL) {//Elemento nao pertence a lista
+				return custo;
+			}
+		}
 
-	if(lista->prox != p) {
-		transpose(lista, &p);
-	}
+		if(lista->prox != p) {
+			transpose(lista, &p);
+		}
 
-	return custo;
+		return custo;
+	}
+	return 0;
 }
 
 //Função: Adicionar elemento
@@ -237,20 +249,26 @@ int remover(LISTA * lista, int chave) {
 
 	p = lista->prox;
 
-	while(p->valor != chave) {
-		anterior = p;
-		p = p->prox;
-		custo++;
-	}
-	if(lista->prox != p) {
-		anterior->prox = p->prox;
-	} else {
-		lista->prox = p->prox;
-	}
+	if(p != NULL) {//Caso Lista vazia
+		while(p->valor != chave) {
+			anterior = p;
+			p = p->prox;
+			custo++;
+			if(p == NULL) {//Caso elemento não seja encontrado
+				return custo;
+			}
+		}
+		if(lista->prox != p) {
+			anterior->prox = p->prox;
+		} else {
+			lista->prox = p->prox;
+		}
 
-	free(p);
+		free(p);
 
-	return custo;
+		return custo;
+	}
+	return 0;
 }
 
 //Função: Imprimir Lista
