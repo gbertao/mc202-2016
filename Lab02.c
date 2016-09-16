@@ -1,6 +1,13 @@
+//Lab 02 - Lista - Giovanni Bertão ra173325 - MC202ef
+//Funcionamento: O programa recebe N números que formam uma lista e M comandos;
+//				 A lista é representada por uma lista ligada simples com nó cabeça;
+//				 Seguindo dois algoritmos diferentes para o mesmo comando o programa calcula o custo de cada algoritmo;
+//				 O programa imprime os custos e como ficou a lista de cada algoritmo.
+
 #include<stdio.h>
 #include<stdlib.h>
 
+//Elementos da lista
 typedef struct lista {
 	int valor;
 	struct lista *prox;
@@ -15,8 +22,8 @@ int aTR(LISTA * lista, int chave);
 int iTR(LISTA *lista, int chave);
 void transpose(LISTA * inicio, LISTA ** p);
 int remover(LISTA * lista, int chave);
-void liberar_lista(LISTA * lista);
 void imprimir_lista(LISTA * lista);
+void liberar_lista(LISTA * lista);
 
 int main (void) {
 	//Variaveis
@@ -37,6 +44,7 @@ int main (void) {
 		inserir_lista(TR, valor);
 	}
 
+	//Comandos e execução dos Algoritmos
 	for(i = 0; i < R; i++) {
 		scanf(" %c%d", &c, &chave);
 		switch(c) {
@@ -57,6 +65,7 @@ int main (void) {
 		}
 	}
 
+	//Saida
 	//MTF
 	printf("%d\n", custoMTF);
 	imprimir_lista(MTF);
@@ -85,7 +94,7 @@ LISTA * criar_lista() {
 	return dummy;
 }
 
-//Função: Inserir valores na lista
+//Função: Inserir valores iniciais na lista
 void inserir_lista(LISTA * lista, int valor) {
 	LISTA * novo;
 	
@@ -101,20 +110,8 @@ void inserir_lista(LISTA * lista, int valor) {
 	return;
 }
 
-//Função Liberar a memória alocada para montar a lista
-void liberar_lista(LISTA * lista) {
-	LISTA * alvo;
-
-	do{
-		alvo = lista;
-		lista = lista->prox;
-		free(alvo);
-	} while(lista != NULL);
-
-	return;
-}
-
-//Funções MTR
+//Funções que seguem o algoritmo MTF
+//Função: Acessar elemento da lista
 int aMTF(LISTA * lista, int chave) {
 	LISTA * p, *anterior;
 	int custo = 1;
@@ -139,6 +136,7 @@ int aMTF(LISTA * lista, int chave) {
 	return custo;
 }
 
+//Função: Inserir novo elemento
 int iMTF(LISTA * lista, int chave) {
 	LISTA * final, * novo;
 	int custo = 1;
@@ -164,7 +162,8 @@ int iMTF(LISTA * lista, int chave) {
 	return custo;
 }
 
-//Funcoes TR
+//Funcoes que seguem o algoritmo TR
+//Função: acessar elemento da lista
 int aTR(LISTA * lista, int chave) {
 	LISTA * p;
 	int custo = 1;
@@ -183,6 +182,7 @@ int aTR(LISTA * lista, int chave) {
 	return custo;
 }
 
+//Função: Adicionar elemento
 int iTR(LISTA *lista, int chave) {
 	LISTA *final, *novo;
 	int custo = 1;
@@ -207,6 +207,7 @@ int iTR(LISTA *lista, int chave) {
 	return custo;
 }
 
+//Função para transpor os elemento(Utilizada pelo algoritmo TR):
 void transpose(LISTA * inicio, LISTA ** p) {
 	LISTA *anterior, *aux;
 
@@ -229,6 +230,7 @@ void transpose(LISTA * inicio, LISTA ** p) {
 	return;
 }
 
+//Função: Remover elemento da lista (Usada pelos 2 algoritmos):
 int remover(LISTA * lista, int chave) {
 	LISTA * p, *anterior;
 	int custo = 1;
@@ -251,6 +253,7 @@ int remover(LISTA * lista, int chave) {
 	return custo;
 }
 
+//Função: Imprimir Lista
 void imprimir_lista(LISTA * lista) {
 	LISTA *printer;
 	printer = lista->prox;
@@ -259,6 +262,19 @@ void imprimir_lista(LISTA * lista) {
 		printf("%d ", printer->valor);
 		printer = printer->prox;
 	}
+
+	return;
+}
+
+//Função: Liberar a memória alocada ao montar a lista
+void liberar_lista(LISTA * lista) {
+	LISTA * alvo;
+
+	do{
+		alvo = lista;
+		lista = lista->prox;
+		free(alvo);
+	} while(lista != NULL);
 
 	return;
 }
