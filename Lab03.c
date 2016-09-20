@@ -1,6 +1,8 @@
 //Lab 03 - Matrioskha - Giovanni Bertão - ra173325 - mc202ef
-//Programa:
-//
+//Programa: O programa recebe um inteiro N e uma sequencia de N números(representando as matrioskas);
+//			Usando estrutura de dados pilha para armazenar a representação das matrioscas e lista ligada
+//			 para "catalogar" os brinquedos, o programa codifica as caracteristicas de cada brinquedo;
+//			O programa retorna se é possivel fabricar os brinquedos. Se sim, ele imprime a cor de cada tipo em ordem.
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -39,9 +41,17 @@ int main (void) {
 		
 		if(pilha == NULL) {//Se pilha vazia
 			push(&pilha, x);
+			if(catalogo != NULL) {//Impede 2 bonecas fora de 1 maior
+				ok = 0;
+				n--;
+				while(n > 0) {
+					scanf(" %*d");
+					n--;
+				}
+			}
 		} else {
-			ok = validade(&pilha, x);
-			if(ok) {//se o movimento eh permitido
+			ok = validade(&pilha, x);//se o movimento eh permitido: ok = 1
+			if(ok) {
 				if(pilha->valor != -x) {
 					push(&pilha, x);
 				} else {
@@ -58,7 +68,7 @@ int main (void) {
 		n--;
 	} while(n > 0 && ok != 0);
 
-	//Saida - Se todos os itens foramadicionos e nenhum ficou "pela metade"
+	//Saida - Se todos os itens foram adicionos e nenhum ficou "pela metade"
 	if(ok && pilha == NULL) {
 		printf("sequencia valida pode ser colorida\n");
 		imprimir(&catalogo);
@@ -76,6 +86,7 @@ int main (void) {
 
 	return 0;
 }
+
 //Funcao: Iniciar estrutura
 void iniciar (MATRI ** p) {
 
@@ -106,6 +117,7 @@ void push (MATRI ** p, int x) {
 	novo = malloc(sizeof(MATRI));
 	novo->valor = x;
 	novo->prox = *p;
+	novo->N = 0;
 	*p = novo;
 
 	return;
@@ -135,6 +147,7 @@ int produzir(MATRI ** p, MATRI ** c) {
 	if(cat == NULL) {//catalogo vazio
 		nova = malloc(sizeof(MATRI));
 		nova->valor = -(*p)->valor;
+		nova->N = (*p)->N;
 		nova->prox = NULL;
 		nova->cor = cor_matri(nova->valor, (*p)->N);
 		
@@ -176,6 +189,7 @@ int produzir(MATRI ** p, MATRI ** c) {
 		//Adicionar no catalogo
 		nova = malloc(sizeof(MATRI));
 		nova->valor = -(*p)->valor;
+		nova->N = (*p)->N;
 		nova->cor = cor_matri(nova->valor, (*p)->N);
 		nova->prox = cat;
 		if(ant != NULL) {
