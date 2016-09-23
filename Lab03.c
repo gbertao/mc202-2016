@@ -166,7 +166,7 @@ int produzir(MATRI ** p, MATRI ** c) {
 		while(cat->valor <= -(*p)->valor) {
 			if(cat->valor == -(*p)->valor) {//Verificar cor dupla
 				corM = cor_matri(-(*p)->valor, (*p)->N);
-				if(corM != cor_matri(cat->valor, cat->N)) {
+				if(corM != cat->cor) {
 					return 0;
 				} else {
 					pop(&p);
