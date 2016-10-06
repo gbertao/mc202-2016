@@ -1,6 +1,14 @@
+/* Lab 04 - Damas e Sudoku - Giovanni Bertao - ra173325- mc202ef
+ * Funcionamento: O programa recebe uma entrada N seguida de uma matriz NxN;
+ * 				  O programa utiliza técnica de backtracking e simula as recursoes utilizando iteracao;
+ * 				  A recursao e simulada afim de ganhar tempo de execucao;
+ * 				  O programa retorna se e possivel ou não anexar as N rainhas no tabuleiro.
+ */
+
 #include<stdio.h>
 #include<stdlib.h>
 
+//Estruturas
 typedef enum {chama, retorna} CHAMADA;
 typedef struct variaveis {
 	int m;
@@ -16,12 +24,14 @@ typedef struct damas {
 	char valor;
 } DAMAS;
 
+//Assinatura de Funcoes
 int existe_solucao (char ** m, DAMAS v[], int n);
 void remove_topo (PILHA * p);
 int eh_disposicao_valida(DAMAS v[], int n);
 int eh_prefixo_valido (DAMAS v[], int m);
 
 int main (void) {
+	//Variaveis
 	int n, i, j;
 	char **m, elemento;
 	DAMAS *v;
@@ -46,13 +56,14 @@ int main (void) {
 		}
 	}
 
+	//Processamento e saida
 	if(existe_solucao(m, v, n)) {
 		printf("Tem solucao.\n");
 	} else {
 		printf("Sem solucao.\n");
 	}
 
-	//Liberar Memória
+	//Liberar Memoria alocada dinamicamente
 	for(i = 0; i < n; i++) {
 		free(m[i]);
 	}
@@ -62,12 +73,13 @@ int main (void) {
 	return 0;
 }
 
+//Funcao: Opera sobre as entrada, simulando recursao usando iteracao e uma pilha, devolve 0 ou 1
 int existe_solucao (char ** m, DAMAS v[], int n) {
 	int sol = 0;
 	PILHA *p;
 	VARIAVEIS *varis;
 	
-	//Inicializacoes
+	//Inicializacoes e atribuicoes iniciais
 	p = malloc(sizeof(PILHA));
 	p->topo = 0;
 	varis = malloc(sizeof(VARIAVEIS) * (n + 1));
@@ -78,28 +90,25 @@ int existe_solucao (char ** m, DAMAS v[], int n) {
 	p->vari[p->topo].ch = chama;
 	(p->topo)++;
 
-	while(p->topo) {
+	//Simula recursao
+	while(p->topo) {//Enquanto existir uma chamada na pilha de execucao
 		if(p->vari[p->topo - 1].ch == chama) {
-			if(p->vari[p->topo - 1].m == n) {
+			if(p->vari[p->topo - 1].m == n) {//Caso base: ultima coluna
 				if(eh_disposicao_valida(v,n)){
 					sol = 1;
 					p->topo = 0;
 				} else {
 					remove_topo(p);
-				//	p->vari[p->topo].m = p->vari[p->topo - 1].m;
-				//	p->vari[p->topo].i = p->vari[p->topo - 1].i;
 					p->vari[p->topo].ch = retorna;
 					(p->topo)++;
 				}
 			} else {
-				if(!eh_prefixo_valido(v, p->vari[p->topo - 1].m)) {
+				if(!eh_prefixo_valido(v, p->vari[p->topo - 1].m)) {//Backtracking
 					remove_topo(p);
-				//	p->vari[p->topo].m = p->vari[p->topo - 1].m;
-				//	p->vari[p->topo].i = p->vari[p->topo - 1].i;
 					p->vari[p->topo].ch = retorna;
 					(p->topo)++;
 				} else {
-					if(p->vari[p->topo - 1].m < n) {
+					if(p->vari[p->topo - 1].m < n) {//Fixa posicao e parte para outra coluna
 						v[p->vari[p->topo - 1].m].linha = p->vari[p->topo - 1].i;
 						v[p->vari[p->topo - 1].m].valor = m[p->vari[p->topo - 1].m][p->vari[p->topo - 1].i - 1];
 
@@ -109,21 +118,17 @@ int existe_solucao (char ** m, DAMAS v[], int n) {
 						(p->topo)++;
 					} else {
 						remove_topo(p);
-			//			p->vari[p->topo].m = p->vari[p->topo - 1].m;
-			//			p->vari[p->topo].i = p->vari[p->topo - 1].i;
 						p->vari[p->topo].ch = retorna;
 						(p->topo)++;
 					}
 				}
 			}
-		} else {
+		} else {//Volta da chamada recursiva(atributo de chamada = retorno)
 			remove_topo(p);
 			if(p->topo) {
 				(p->vari[p->topo - 1].i)++;
 				if(p->vari[p->topo -1].i > n) {
 					remove_topo(p);
-				//	p->vari[p->topo].m = p->vari[p->topo - 1].m;
-				//	p->vari[p->topo].i = p->vari[p->topo - 1].i;
 					p->vari[p->topo].ch = retorna;
 					(p->topo)++;
 				}
@@ -131,18 +136,20 @@ int existe_solucao (char ** m, DAMAS v[], int n) {
 		}
 	}
 
-	//Free
+	//Liberar memória alocada pela funcao
 	free(varis);
 	free(p);
 
 	return sol;
 }	
 
+//Funcao: remover o topo da pilha de execucao, semelhante a retornar da chamada
 void remove_topo (PILHA * p) {
 	(p->topo)--;
 	return;
 }
 
+//Funcao: Checa se a configuracao final eh uma solucao
 int eh_disposicao_valida(DAMAS v[], int n) {
 	int fat = 1, i, calc = 1;
 	
@@ -154,7 +161,7 @@ int eh_disposicao_valida(DAMAS v[], int n) {
 		calc = calc * v[i].linha;
 	}
 
-	if(calc == fat) {
+	if(calc == fat) {//Se a pricipio cada dama esta em uma linha
 		if(eh_prefixo_valido(v, n)) {
 			return 1;
 		}
@@ -162,6 +169,8 @@ int eh_disposicao_valida(DAMAS v[], int n) {
 	return 0;
 }
 
+//Funcao: Analisa se o prefixo eh valido, analisa se existe linhas, colunas ou valores  conhecidentes.
+//(utilizado no backtracking)
 int eh_prefixo_valido (DAMAS v[], int m) {
 	int lin, i;
 	char val;
