@@ -1,0 +1,5 @@
+banana
+casa
+cavalo
+gente
+pessoa

@@ -1,0 +1,17 @@
+touch FOTY
+touch FOTBB
+touch DOCZ
+touch MUSX
+touch DOCW
+touch FOTV
+touch MUSBA
+touch MUSU
+rm FOTY
+rm DOCW
+rm MUSX
+rm FOTBB
+ls MUSU
+ls FOTV
+ls MUSBA
+ls DOCZ
+ls *

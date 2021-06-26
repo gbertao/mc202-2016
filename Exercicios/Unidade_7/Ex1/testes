@@ -1,0 +1,8 @@
+testes
+
+n = 3:
+	recursivo = 0m1,300s
+	iterativo = 0m0,700s
+
+n = 2:
+	recursivo = 

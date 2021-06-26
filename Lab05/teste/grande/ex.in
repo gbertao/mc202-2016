@@ -1,0 +1,12 @@
+ touch casa
+ touch carro
+ touch livro
+ touch lixo
+ touch luxo
+ ls livro
+ touch luxo
+ rm ca*
+ rm livro
+ ls li*
+ ls carro
+ ls luxo

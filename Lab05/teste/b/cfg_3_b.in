@@ -1,0 +1,17 @@
+touch DOCCP
+touch FOTCO
+touch DOCCM
+touch MUSCQ
+touch DOCCS
+touch FOTCL
+touch MUSCN
+touch FOTCR
+rm FOTCL
+rm MUSCN
+rm FOTCO
+rm DOCCM
+ls DOCCS
+ls DOCCP
+ls FOTCR
+ls MUSCQ
+ls *

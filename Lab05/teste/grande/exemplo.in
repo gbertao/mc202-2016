@@ -1,0 +1,12 @@
+touch casa
+touch carro
+touch livro
+touch lixo
+touch lapis
+ls livro
+touch lapis
+rm ca*
+rm livro
+ls li*
+ls carro
+ls lapis
