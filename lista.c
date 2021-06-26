@@ -2,8 +2,6 @@
 //Funcionamento: O programa recebe duas linhas com uma sequencia de n números na primeira e 3 números na segunda;
 //				 Apartir dessa sequencia o programa irá armazenar a primeira linha em formato de listaligada;
 //				 Serão feitos testes utilizando a segunda linha para que o programa retorne 3 listas diferentes.
-//
-//Tempo de Execução: O(n²).
 
 #include<stdio.h>
 #include<stdlib.h>
