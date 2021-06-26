@@ -80,7 +80,7 @@ int main (void) {
 	if(pilha != NULL) {
 		liberar(&pilha);
 	}
-	if(ok) {
+	if(catalogo != NULL) {
 		liberar(&catalogo);
 	}
 
@@ -135,7 +135,9 @@ void pop (MATRI ***p) {
 	return;
 }
 
-//Funcao: retorna 0 ou 1 se a matrioska é valida
+//Funcao: verifica se as configuracoes de matrioska sao validas ou se ja existem;
+//		  adiciona matrioska no catologo em ordem;
+//		  retorna 0 ou 1 se foi possivel adicionar ou nao.
 int produzir(MATRI ** p, MATRI ** c) {
 	MATRI * cat, * ant, * nova;
 	COR corM;
