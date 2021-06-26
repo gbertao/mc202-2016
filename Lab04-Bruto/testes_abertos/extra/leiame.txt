@@ -1,0 +1,7 @@
+Esses arquivos contêm instâncias que podem 
+ser difíceis para os algoritmos backtracking
+mais simples. Dependendo de como são buscadas
+as soluções, um algoritmo pode ser rápido para
+algumas instâncias, e mais lento para outras.
+- Em quanto tempo seu programa executa cada um deles?
+- desafio: escrever um programa que resolva todos rapidamente (em 10 segundos)
